@@ -1,0 +1,136 @@
+version: "2"
+services:
+  rdw:
+    image: health-share:2017.1
+    container_name: rdw
+    hostname: rdw
+    environment:
+      serverName: rdw
+    ports:
+      - "57772:57772"
+      - "1972:1972"
+
+    volumes:
+      - "./databases:/cachedb"
+      - "./journals:/cachejrn"
+      - "./code:/rdwCode"
+      - "./client:/scripts"
+
+  cachev06:
+    image: cache:2017.1
+    container_name: cachev06
+    hostname: cachev06
+    depends_on:
+      - "rdw"
+    environment:
+      serverName: cachev06
+    ports:
+      - "57706:57772"
+      - "1976:1972"
+
+    volumes:
+      - "./databases/v06:/cachedb/v06"
+      - "./journals/v06:/cachejrn/v06"
+      - "./client:/rdwClient"
+  
+  cachev07:
+    image: cache:2017.1
+    container_name: cachev07
+    hostname: cachev07
+    depends_on:
+      - "rdw"
+    environment:
+      serverName: cachev07
+    ports:
+      - "57707:57772"
+      - "1977:1972"
+
+    volumes:
+      - "./databases/v07:/cachedb/v07"
+      - "./journals/v07:/cachejrn/v07"
+      - "./client:/rdwClient"
+
+  cachev08:
+    image: cache:2017.1
+    container_name: cachev08
+    hostname: cachev08
+    depends_on:
+      - "rdw"
+    environment:
+      serverName: cachev08
+    ports:
+      - "57708:57772"
+      - "1978:1972"
+
+    volumes:
+      - "./databases/v08:/cachedb/v08"
+      - "./journals/v08:/cachejrn/v08"
+      - "./client:/rdwClient"
+
+  cachev09:
+    image: cache:2017.1
+    container_name: cachev09
+    hostname: cachev09
+    depends_on:
+      - "rdw"
+    environment:
+      serverName: cachev09
+    ports:
+      - "57709:57772"
+      - "1979:1972"
+
+    volumes:
+      - "./databases/v09:/cachedb/v09"
+      - "./journals/v09:/cachejrn/v09"
+      - "./client:/rdwClient"
+
+  cachev10:
+    image: cache:2017.1
+    container_name: cachev10
+    hostname: cachev010
+    depends_on:
+      - "rdw"
+    environment:
+      serverName: cachev10
+    ports:
+      - "57710:57772"
+      - "1910:1972"
+
+    volumes:
+      - "./databases/v10:/cachedb/v10"
+      - "./journals/v10:/cachejrn/v10"
+      - "./client:/rdwClient"
+
+  cachev11:
+    image: cache:2017.1
+    container_name: cachev11
+    hostname: cachev11
+    depends_on:
+      - "rdw"
+    environment:
+      serverName: cachev11
+    ports:
+      - "57711:57772"
+      - "1911:1972"
+
+    volumes:
+      - "./databases/v11:/cachedb/v11"
+      - "./journals/v11:/cachejrn/v11"
+      - "./client:/rdwClient"
+      
+  cachev88:
+    image: cache:2017.1
+    container_name: cachev88
+    hostname: cachev88
+    depends_on:
+      - "rdw"
+    environment:
+      serverName: cachev88
+    ports:
+      - "57788:57772"
+      - "1988:1972"
+
+    volumes:
+      - "./databases/v88:/cachedb/v88"
+      - "./journals/v88:/cachejrn/v88"
+      - "./client:/rdwClient"
