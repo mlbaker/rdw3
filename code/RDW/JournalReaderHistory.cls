@@ -1,22 +1,24 @@
-Class RDW.JournalReaderHistory extends %Persistent {
+Class RDW.JournalReaderHistory Extends %Persistent
+{
 
-	Property JournalFile as RDW.JournalFile;
+Property JournalFile As RDW.JournalFile;
 
-	Property StartOffset As %Integer;
+Property StartOffset As %Integer;
 
-	Property EndOffset As %Integer;
+Property EndOffset As %Integer;
 
-	Property StartTime As %TimeStamp;
+Property StartTime As %TimeStamp;
 
-	Property EndTime As %TimeStamp;
+Property EndTime As %TimeStamp;
 
-	Property RecordsFound As %Integer;
+Property RecordsFound As %Integer;
 
-ClassMethod Initialize() {
-
+ClassMethod Initialize()
+{
 }
 
-ClassMethod StartJournalReader() {
+ClassMethod StartJournalReader()
+{
 	
 	Set tStatement=##class(%SQL.Statement).%New()
 	Set insId=##class(RDW.CacheInstance).GetInstanceId()
@@ -46,7 +48,6 @@ ClassMethod StartJournalReader() {
 		}
 	}
 }
-
 
 Storage Default
 {

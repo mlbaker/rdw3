@@ -1,4 +1,4 @@
-Class RDW.VistaSite Extends %Persistent
+Class RDW.VistaSite Extends (%Persistent, %XML.Adaptor)
 {
 
 Property Sta3n As %Integer;
@@ -70,14 +70,16 @@ ClassMethod Initialize()
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(553,'det','Detroit MI VAMC',11,11,1,'det',0,0))
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(583,'ind','Indianapolis IN VAMC',11,11,1,'ind',0,0))
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(610,'nin','Northern Indiana (Marion IL) VAMC',11,11,1,'nin',0,0))
-	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(655,'sag','Saginaw MI VAMC',11,11,1,'sag',0,0))	
+	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(655,'sag','Saginaw MI VAMC',11,11,1,'sag',0,0))
 }
 
-ClassMethod GetSta3nFromSta3a(Sta3a As %String) As %Integer {
+ClassMethod GetSta3nFromSta3a(Sta3a As %String) As %Integer
+{
 	Set Sta3n=""
 	&sql(SELECT Sta3n INTO :Sta3n FROM RDW.VistaSite WHERE Sta3a=:Sta3a)
 	Quit Sta3n
 }
+
 Storage Default
 {
 <Data name="VistaSiteDefaultData">

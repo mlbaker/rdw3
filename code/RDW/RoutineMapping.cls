@@ -1,12 +1,14 @@
-Class RDW.RoutineMapping extends %Persistent {
-	
-	Property VistaSite As RDW.VistaSite;
-	
-	Property RoutineName As %String;
+Class RDW.RoutineMapping Extends %Persistent
+{
 
-	Property VistaSiteDatabase As RDW.VistaSiteDatabase;
+Property VistaSite As RDW.VistaSite;
 
-ClassMethod Initialize() {
+Property RoutineName As %String;
+
+Property VistaSiteDatabase As RDW.VistaSiteDatabase;
+
+ClassMethod Initialize()
+{
 	Do ..%KillExtent()
 	Set tStatement=##class(%SQL.Statement).%New()
 	Set sql="SELECT ID,VistaSite FROM RDW.VistaSiteDatabase WHERE CacheDatabaseName LIKE '%-rou'"
@@ -23,6 +25,7 @@ ClassMethod Initialize() {
 	Do tStatement.%Close()
 	Kill rSet
 }
+
 Storage Default
 {
 <Data name="RoutineMappingDefaultData">

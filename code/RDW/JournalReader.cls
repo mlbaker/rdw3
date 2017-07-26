@@ -1,21 +1,23 @@
-Class RDW.JournalReader extends %RegisteredObject {
-	
-	Property JournalFile As RDW.JournalFile;
+Class RDW.JournalReader Extends %RegisteredObject
+{
 
-	Property JournalOffset As %Integer;
+Property JournalFile As RDW.JournalFile;
 
-	Property StartTime As %TimeStamp;
+Property JournalOffset As %Integer;
 
-	Property EndTime As %TimeStamp;
-	
-	Property SignaledToStop As %Boolean;
+Property StartTime As %TimeStamp;
 
-	Property JournalReaderHistory As RDW.JournalReaderHistory;
+Property EndTime As %TimeStamp;
 
-ClassMethod Initialize() {
+Property SignaledToStop As %Boolean;
 
+Property JournalReaderHistory As RDW.JournalReaderHistory;
+
+ClassMethod Initialize()
+{
 }
-ClassMethod New(oJFH As RDW.JournalReaderHistory) As RDW.JournalReader 
+
+ClassMethod New(oJFH As RDW.JournalReaderHistory) As RDW.JournalReader
 {
 	Set JR=..%New()
 	Set JR.JournalFile=oJFH.JournalFile
@@ -26,8 +28,8 @@ ClassMethod New(oJFH As RDW.JournalReaderHistory) As RDW.JournalReader
 	Quit JR
 }
 
-
-ClassMethod ReadFile(jR As RDW.JournalReader) {
+ClassMethod ReadFile(jR As RDW.JournalReader)
+{
 	Set fileName=jR.JournalFile.DirectoryName_jR.JournalFile.JournalFileName
 	Write fileName,!
 	Set jFile=##class(%SYS.Journal.File).%OpenId(fileName)
@@ -63,19 +65,16 @@ ClassMethod ReadFile(jR As RDW.JournalReader) {
 							//Does it have the right number of subscripts?
 							If GlobalNumSubs=GTW.NumberOfSubscripts {
 								//Get The PrimaryKeys from the Global Subscripts...
-								Set PKIEN=""
-								Set PrimaryKeys=GTW.PrimaryKeys
-								For i=1:1 { 
-									Quit:$Piece(PrimaryKeys,",",i)=""
-									Set PKIEN=PKIEN_$QSubscript(jRec.GlobalNode,$Piece(PrimaryKeys,",",i))_","
-								}
+								Set PKIEN=..GetPrimaryKeys(GTW,jRec)
 								Set ClassName=GTW.ClassName
 								Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN)
 							}
 						} Else {
 							// DELETE encountered.
 							If (GlobalNumSubs=GTW.NumberOfSubscripts)!(GlobalNumSub=GTW.NumberOfSubscripts-1) {
-							
+								Set PKIEN=..GetPrimaryKeys(GTW,jRec)
+								Set ClassName=GTW.ClassName
+								Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN)
 							}
 						}
 						Set GTWId=$Order(^RDW.GlobalsToWatch("GlobalNameIndex",Global,GTWId))
@@ -100,6 +99,17 @@ ClassMethod ReadFile(jR As RDW.JournalReader) {
 		}
 		
 	}
+}
+
+ClassMethod GetPrimaryKeys(GTW As RDW.GlobalsToWatch, jRec As %SYS.Journal.SetKillRecord) As %String
+{
+	Set PKIEN=""
+	Set PrimaryKeys=GTW.PrimaryKeys
+	For i=1:1 { 
+		Quit:$Piece(PrimaryKeys,",",i)=""
+		Set PKIEN=PKIEN_$QSubscript(jRec.GlobalNode,$Piece(PrimaryKeys,",",i))_","
+	}
+	Quit PKIEN
 }
 
 }

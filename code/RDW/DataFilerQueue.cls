@@ -1,4 +1,4 @@
-Class RDW.DataFilerQueue extends %Persistent {
+Class RDW.DataFilerQueue Extends %Persistent {
 	
 	Property ClassName As %String (COLLATION="EXACT");
 
@@ -12,7 +12,11 @@ Class RDW.DataFilerQueue extends %Persistent {
 
 	Property CacheInstance As RDW.CacheInstance;
 
-Index MainIndex On (CacheInstance,OperationType,JournalFile,ClassName,VistaSite,PrimaryKeys) [PrimaryKey, IdKey, Unique];
+	Property JournalFileOffset As %Integer;
+
+	Index MainIndex On (CacheInstance,OperationType,JournalFile,ClassName,VistaSite,PrimaryKeys) [PrimaryKey, IdKey, Unique];
+
+	Index OrderIndex On (JournalFile,JournalFileOffset);
 
 ClassMethod AddEntry(CacheInstance As RDW.CacheInstance,OperationType As %String,JournalFile As RDW.JournalFile,ClassName As %String,VistaSite As RDW.VistaSite,PrimaryKeys As %String) As %String  {
 	Quit:$Data(^RDW.DataFilerQueueD(CacheInstance.CacheInstanceID,OperationType,JournalFile.%Id(),ClassName,VistaSite.Sta3n,PrimaryKeys)) "1^Already in Queue"
@@ -31,6 +35,9 @@ Storage Default
 <Data name="DataFilerQueueDefaultData">
 <Value name="1">
 <Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>JournalFileOffset</Value>
 </Value>
 </Data>
 <DataLocation>^RDW.DataFilerQueueD</DataLocation>

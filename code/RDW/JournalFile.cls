@@ -1,10 +1,11 @@
-Class RDW.JournalFile extends %Persistent {
+Class RDW.JournalFile Extends %Persistent
+{
 
-Property JournalFileName As %String (COLLATION="EXACT");
+Property JournalFileName As %String(COLLATION = "EXACT");
 
 Property CacheInstance As RDW.CacheInstance;
 
-Property DirectoryName As %String (MAXLEN=200, COLLATION="EXACT");
+Property DirectoryName As %String(COLLATION = "EXACT", MAXLEN = 200);
 
 Property EntireFileRead As %Boolean;
 
@@ -12,13 +13,14 @@ Property CurrentlyReadingFile As %Boolean;
 
 Property FileClosed As %Boolean;
 
-Index JournalFileNameIndex on (CacheInstance,JournalFileName);
+Index JournalFileNameIndex On (CacheInstance, JournalFileName);
 
-ClassMethod Initialize() {
-	
+ClassMethod Initialize()
+{
 }
 
-ClassMethod AddNewFiles() {
+ClassMethod AddNewFiles()
+{
 	Kill jFile
 	Set rSet=##class(%ResultSet).%New("%SYS.Journal.File:ByTimeReverseOrder")
 	Set Status=rSet.Execute()
@@ -49,7 +51,6 @@ ClassMethod AddNewFiles() {
 		}
 	}
 }
-
 
 Storage Default
 {

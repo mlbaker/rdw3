@@ -1,4 +1,4 @@
-Class RDW.Server extends %Persistent 
+Class RDW.Server Extends (%Persistent, %XML.Adaptor)
 {
 
 Property ServerID As %Integer;
@@ -21,12 +21,14 @@ ClassMethod Initialize()
 	&sql(INSERT INTO RDW.Server(ServerID,ServerName,Active) VALUES(88,'cachev88',1))
 }
 
-ClassMethod GetServerId() As %Integer {
+ClassMethod GetServerId() As %Integer
+{
 	Set serverName=$Piece($SYSTEM,":",1)
 	Set id=""
 	&sql(SELECT ID INTO :id FROM RDW.Server WHERE ServerName=:serverName)
 	Quit id
 }
+
 Storage Default
 {
 <Data name="ServerDefaultData">

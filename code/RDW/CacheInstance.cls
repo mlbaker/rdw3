@@ -28,7 +28,8 @@ ClassMethod Initialize()
 	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(88,88,'HS2017',1972,57772,1))
 }
 
-ClassMethod GetInstanceId() {
+ClassMethod GetInstanceId()
+{
 	Set svrId=##class(RDW.Server).GetServerId()
 	Set id=""
 	&sql(SELECT ID INTO :id FROM RDW.CacheInstance WHERE Server=:svrId)

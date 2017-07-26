@@ -30,7 +30,6 @@ ClassMethod OldInitialize()
 	}
 	Do tStatement.%Close()
 	Do rSet.%Close()
-	
 }
 
 ClassMethod Initialize()
@@ -500,7 +499,6 @@ ClassMethod CreateDatabaseDirectoryScript()
 	Do file.Close()
 	Do dbfile.Close()
 }
-
 
 Storage Default
 {

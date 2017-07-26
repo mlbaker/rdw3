@@ -1,10 +1,12 @@
-Class RDW.JournalReaderStatus extends %Persistent {
-	
-	Property CacheInstance As RDW.CacheInstance;
-	
-	Property Status As %String;
+Class RDW.JournalReaderStatus Extends %Persistent
+{
 
-ClassMethod Initialize() {
+Property CacheInstance As RDW.CacheInstance;
+
+Property Status As %String;
+
+ClassMethod Initialize()
+{
 	Do ..%KillExtent()
 	Set sql="SELECT ID FROM RDW.CacheInstance WHERE Active=1"
 	Set tStatement=##class(%SQL.Statement).%New()
@@ -19,12 +21,14 @@ ClassMethod Initialize() {
 	Do tStatement.%Close()
 }
 
-ClassMethod GetStatus() {
+ClassMethod GetStatus()
+{
 	Set insId=##class(RDW.CacheInstance).GetInstanceId()
 	Set Status=""
 	&sql(SELECT Status INTO :Status FROM RDW.JournalReaderStatus WHERE CacheInstance=:insId)
 	Quit Status
 }
+
 Storage Default
 {
 <Data name="JournalReaderStatusDefaultData">

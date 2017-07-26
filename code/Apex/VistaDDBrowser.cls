@@ -1,22 +1,23 @@
-Class Apex.VistaDDBrowser Extends %ZEN.Component.page {
+Class Apex.VistaDDBrowser Extends %ZEN.Component.page
+{
 
-  /// Comma-separated list of User class packages whose HTML class
-  /// and style definitions are in pre-generated include files.
-  Parameter USERPACKAGES;
+/// Comma-separated list of User class packages whose HTML class
+/// and style definitions are in pre-generated include files.
+Parameter USERPACKAGES;
 
-  /// Class name of application this page belongs to.
-  Parameter APPLICATION;
+/// Class name of application this page belongs to.
+Parameter APPLICATION;
 
-  /// Displayed name of this page.
-  Parameter PAGENAME;
+/// Displayed name of this page.
+Parameter PAGENAME;
 
-  /// Domain used for localization.
-  Parameter DOMAIN;
+/// Domain used for localization.
+Parameter DOMAIN;
 
-  /// This Style block contains page-specific CSS style definitions.
-  XData Style
-  {
-    <style type="text/css">
+/// This Style block contains page-specific CSS style definitions.
+XData Style
+{
+<style type="text/css">
       /* style for title bar */
       #title {
         background: #C5D6D6;
@@ -66,12 +67,12 @@ Class Apex.VistaDDBrowser Extends %ZEN.Component.page {
         text-align: center;
       }
     </style>
-  }
+}
 
-  /// This XML block defines the contents of this page.
-  XData Contents [ XMLNamespace = "http://www.intersystems.com/zen" ]
-  {
-    <page xmlns="http://www.intersystems.com/zen" title="Vista DD Browser">
+/// This XML block defines the contents of this page.
+XData Contents [ XMLNamespace = "http://www.intersystems.com/zen" ]
+{
+<page xmlns="http://www.intersystems.com/zen" title="Vista DD Browser">
       <html id="title">Vista Data Dictionary</html>
       <spacer height="25"/>
       <hgroup width="100%">
@@ -94,13 +95,12 @@ Class Apex.VistaDDBrowser Extends %ZEN.Component.page {
       	</hgroup>
       </hgroup>
     </page>
-  }
-
-
-ClassMethod Initialize() {
-
 }
-  
+
+ClassMethod Initialize()
+{
+}
+
 ClassMethod GetTreeInfo(pRoot As %String, Output pTree, ByRef pParms) As %Status
 {
   if pRoot=""

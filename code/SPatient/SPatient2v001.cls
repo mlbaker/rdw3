@@ -1,4 +1,4 @@
-Class SPatient.SPatient2v001 Extends %Persistent [SqlTableName= SPatient_2_v001 ]
+Class SPatient.SPatient2v001 Extends (%Persistent, %XML.Adaptor) [ SqlTableName = SPatient_2_v001 ]
 {
 
 Property VistaSite As RDW.VistaSite;
@@ -23,7 +23,7 @@ Property StreetAddress1 As %String;
 
 Property StreetAddress2 As %String;
 
-Property StreetAddress3 As %String; 
+Property StreetAddress3 As %String;
 
 Property City As %String;
 
@@ -41,7 +41,7 @@ Property PatientTypeIEN As %String;
 
 Property IntegrationControlNumber As %String;
 
-Property FullICN AS %String;
+Property FullICN As %String;
 
 Property VeteranFlag As %String;
 
@@ -73,7 +73,7 @@ ClassMethod RemoveObject(VistaSite As RDW.VistaSite, FMPK As %String) As %String
 {
 	Set Status=1
 	Set PatientIEN=$Piece(FMPK,",",1)
-	Quit:'+VistaFileNumber "1^ PatientIEN: "_PatientIEN_" is NOT a number."
+	Quit:'+PatientIEN "1^ PatientIEN: "_PatientIEN_" is NOT a number."
 	
 	Quit:$Get(^|VistaSite.VistaSiteNamespace|DPT(PatientIEN,0))'="" "1^ "_PatientIEN_" is not deleted." 
 	Set id=VistaSite.Sta3n_"||"_PatientIEN
@@ -204,6 +204,7 @@ Method setSSN(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setMaritalStatusIEN(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -214,6 +215,7 @@ Method setMaritalStatusIEN(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setStreetAddress1(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -224,6 +226,7 @@ Method setStreetAddress1(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setStreetAddress2(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -234,6 +237,7 @@ Method setStreetAddress2(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setStreetAddress3(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -244,6 +248,7 @@ Method setStreetAddress3(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setCity(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -254,6 +259,7 @@ Method setCity(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setStateIEN(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -264,6 +270,7 @@ Method setStateIEN(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setZipCode(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -274,6 +281,7 @@ Method setZipCode(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setCountyIEN(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -284,6 +292,7 @@ Method setCountyIEN(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setServiceConnectedFlag(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -295,6 +304,7 @@ Method setServiceConnectedFlag(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setDateOfDeath(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -306,6 +316,7 @@ Method setDateOfDeath(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setPatientTypeIEN(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -316,6 +327,7 @@ Method setPatientTypeIEN(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setIntegrationControlNumber(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -326,6 +338,7 @@ Method setIntegrationControlNumber(NS As %String, PatientIEN As %String) As %Int
 	}
 	Quit Flag
 }
+
 Method setFullICN(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -336,6 +349,7 @@ Method setFullICN(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
+
 Method setVeteranFlag(NS As %String, PatientIEN As %String) As %Integer
 {
 	Set Flag=0
@@ -347,7 +361,6 @@ Method setVeteranFlag(NS As %String, PatientIEN As %String) As %Integer
 	}
 	Quit Flag
 }
-
 
 Storage Default
 {

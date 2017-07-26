@@ -3,8 +3,6 @@ Class RDW.Installer Extends %Persistent
 
 Property ObjectToLoad As %String;
 
-
-
 ClassMethod Initialize()
 {
 	// Add VistaSite as an object to load.
@@ -96,7 +94,8 @@ ClassMethod InstallAndInitializeClasses()
     }
 }
 
-ClassMethod SetupServerECP() {
+ClassMethod SetupServerECP()
+{
 	Set NS=$NAMESPACE
 	ZN "%SYS"
 	Set ecp=##class(Security.Services).%OpenId("%service_ecp")
@@ -107,7 +106,8 @@ ClassMethod SetupServerECP() {
 	ZN NS
 }
 
-ClassMethod SetupServerCSP() {
+ClassMethod SetupServerCSP()
+{
 	Set NS=$NAMESPACE
 	ZN "%SYS"
 	Set csp=##class(Security.Applications).%New()
@@ -118,7 +118,8 @@ ClassMethod SetupServerCSP() {
 	ZN NS
 }
 
-ClassMethod SetupClient() {
+ClassMethod SetupClient()
+{
 	Do ..SetupClientDatabases()
 	Do ..SetupClientGlobalMapping()
 	Do ..SetupClientRoutineMapping()
@@ -128,7 +129,8 @@ ClassMethod SetupClient() {
 	Job ..PopulateDW()
 }
 
-ClassMethod SetupClientDatabases() {
+ClassMethod SetupClientDatabases()
+{
 	Set NS=$NAMESPACE
 	Set tStatement=##class(%SQL.Statement).%New()
 	Set cName=$Piece($SYSTEM,":",1)
@@ -158,7 +160,8 @@ ClassMethod SetupClientDatabases() {
 	Do rSet.%Close()
 }
 
-ClassMethod SetupClientECP() {
+ClassMethod SetupClientECP()
+{
 	Set NS=$NAMESPACE
 	Set client=##class(%ListOfDataTypes).%New()
 	Do client.Insert("rdw")
@@ -194,7 +197,6 @@ ClassMethod SetupClientGlobalMapping()
 		ZN NS
 	}
 	Do rSet.%Close()
-
 }
 
 ClassMethod SetupClientRoutineMapping()
@@ -217,11 +219,10 @@ ClassMethod SetupClientRoutineMapping()
 		ZN NS
 	}
 	Do rSet.%Close()
-	
 }
 
-
-ClassMethod PopulateDW() {
+ClassMethod PopulateDW()
+{
 	Kill Site
 	Set tStatement=##class(%SQL.Statement).%New()
 	Set cName=$Piece($SYSTEM,":",1)
@@ -247,7 +248,8 @@ ClassMethod PopulateDW() {
 	}
 }
 
-ClassMethod SetupClientJournalDirectory() {
+ClassMethod SetupClientJournalDirectory()
+{
 	Set NS=$NAMESPACE
 	Set cName=$Piece($SYSTEM,":",1)
 	Set jDirectory="/cachejrn/v"_$Piece($ZCONVERT(cName,"U"),"V",2)_"/jrn/"
@@ -258,8 +260,8 @@ ClassMethod SetupClientJournalDirectory() {
 	ZN NS
 }
 
-
-ClassMethod LoadGlobals() {
+ClassMethod LoadGlobals()
+{
 	Kill Site
 	Set tStatement=##class(%SQL.Statement).%New()
 	Set cName=$Piece($SYSTEM,":",1)
@@ -283,7 +285,8 @@ ClassMethod LoadGlobals() {
 	}
 }
 
-ClassMethod AddJFileTask() As %String {
+ClassMethod AddJFileTask() As %String
+{
 	Set task=##Class(%SYS.Task).%New()
 	Set task.Name="AddJournalFiles"
 	Set task.Description="Add New Journal Files to list"

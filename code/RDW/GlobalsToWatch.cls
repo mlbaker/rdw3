@@ -1,9 +1,9 @@
 Class RDW.GlobalsToWatch Extends %Persistent
 {
 
-Property GlobalName As %String (COLLATION="EXACT");
+Property GlobalName As %String(COLLATION = "EXACT");
 
-Property ClassName As %String(COLLATION="EXACT");
+Property ClassName As %String(COLLATION = "EXACT");
 
 Property NumberOfSubscripts As %Integer;
 
@@ -13,7 +13,7 @@ Property SubscriptCompare As %String;
 
 Property FirstSubscript As %String;
 
-Index GlobalNameIndex on GlobalName;
+Index GlobalNameIndex On GlobalName;
 
 ClassMethod Initialize()
 {

@@ -1,9 +1,11 @@
-Class RDW.Utilities extends %RegisteredObject {
+Class RDW.Utilities Extends %RegisteredObject
+{
 
-ClassMethod Initialize() {
-
+ClassMethod Initialize()
+{
 }
-ClassMethod ExportRoutines(NS As %String) 
+
+ClassMethod ExportRoutines(NS As %String)
 {
 	Set OldNS=$NAMESPACE
 	ZN NS
@@ -19,7 +21,7 @@ ClassMethod ExportRoutines(NS As %String)
 	ZN OldNS
 }
 
-ClassMethod ExportMgrRoutines(NS As %String) 
+ClassMethod ExportMgrRoutines(NS As %String)
 {
 	Set OldNS=$NAMESPACE
 	ZN NS
@@ -33,7 +35,7 @@ ClassMethod ExportMgrRoutines(NS As %String)
 	ZN OldNS
 }
 
-ClassMethod ImportGlobals(NS As %String) 
+ClassMethod ImportGlobals(NS As %String)
 {
 	Set OldNS=$NAMESPACE
 	ZN NS
@@ -47,7 +49,7 @@ ClassMethod ImportGlobals(NS As %String)
 	ZN OldNS
 }
 
-ClassMethod ImportRoutines(NS As %String) 
+ClassMethod ImportRoutines(NS As %String)
 {
 	Set OldNS=$NAMESPACE
 	ZN NS
@@ -58,4 +60,5 @@ ClassMethod ImportRoutines(NS As %String)
 	Do $system.OBJ.Load(fName,"ck")
 	ZN OldNS
 }
+
 }

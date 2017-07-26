@@ -13,11 +13,11 @@ Property VistaFieldType As %String;
 
 Property VistaFieldCodes As %String(MAXLEN = 250);
 
-Property PathToParent As %String (MAXLEN=250);
+Property PathToParent As %String(MAXLEN = 250);
 
 Property ParentVistaFile As Dim.VistaFilev001;
 
-Property GlobalNode As %String(MAXLEN=350);
+Property GlobalNode As %String(MAXLEN = 350);
 
 Property GlobalPiece As %Integer;
 
