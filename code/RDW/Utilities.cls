@@ -61,4 +61,13 @@ ClassMethod ImportRoutines(NS As %String)
 	ZN OldNS
 }
 
+ClassMethod PatientToXML(ptId As %String)
+{
+	Set pt=##class(PAMPI.PatientInfo).%OpenId(ptId)
+	Set Writer=##class(%XML.Writer).%New()
+	Set filename="/rdwClient/PatientInfo_"_ptId_".xml"
+	Do Writer.OutputToFile(filename)
+	Set Writer.Indent=2
+	Do Writer.RootObject(pt)
+}
 }

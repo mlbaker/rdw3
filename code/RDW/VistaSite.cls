@@ -44,10 +44,10 @@ ClassMethod Initialize()
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(679,'tua','Tuscaloosa AL VAMC',7,7,1,'tua',0,0))
 	
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(516,'bay','Bay Pines FL VAMC',8,8,1,'bay',1,1))
-	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(673,'tam','Tampa (Haley) FL VAMC',8,8,1,'tam',0,0))
+	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(673,'tam','Tampa (Haley) FL VAMC',8,8,1,'tam',1,1))
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(672,'saj','San Juan PR VAMC',8,8,1,'saj',0,0))
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(546,'mia','Miami FL VAMC',8,88,1,'mia',0,0))
-	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(548,'wpb','West Palm Beach FL  VAMC',8,88,1,'wpb',0,0))
+	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(548,'wpb','West Palm Beach FL  VAMC',8,88,1,'wpb',1,1))
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(573,'nfl','North Florida (Gainesville) VAMC',8,88,1,'nfl',0,0))
 	&sql(INSERT INTO RDW.VistaSite(Sta3n,Sta3a,SiteName,VISN,Server,Active,VistaSiteNamespace,PopulateDW,LoadGlobals) VALUES(675,'orl','Orlando FL VAMC',8,88,1,'orl',0,0))
 	

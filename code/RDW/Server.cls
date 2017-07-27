@@ -3,7 +3,7 @@ Class RDW.Server Extends (%Persistent, %XML.Adaptor)
 
 Property ServerID As %Integer;
 
-Property ServerName As %String;
+Property ServerName As %String (COLLATION="EXACT");
 
 Property Active As %Boolean;
 

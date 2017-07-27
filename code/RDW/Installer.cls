@@ -72,6 +72,22 @@ ClassMethod Initialize()
 	Set oref.ObjectToLoad="Apex.VistaDDBrowser"
 	Do oref.%Save()
 	
+	Set oref=..%New()
+	Set oref.ObjectToLoad="Allergy.Allergy1208v001"
+	Do oref.%Save()
+	
+	Set oref=..%New()
+	Set oref.ObjectToLoad="Dim.LocalDrug50v001"
+	Do oref.%Save()
+	
+	Set oref=..%New()
+	Set oref.ObjectToLoad="Dim.NationalDrugFile506v001"
+	Do oref.%Save()
+	
+	Set oref=..%New()
+	Set oref.ObjectToLoad="PAMPI.PatientInfo"
+	Do oref.%Save()	
+	
 	Do ..SetupServer()
 }
 
@@ -240,9 +256,18 @@ ClassMethod PopulateDW()
 	While +Sta3n {
 		Set oSite=##class(RDW.VistaSite).%OpenId(Sta3n)
 		If $IsObject(oSite) {
+			//Write !,"SPatient.SPatient2v001",!
 			Do ##class(SPatient.SPatient2v001).BuildSite(oSite)
+			//Write "Dim.VistaFilev001",!
 			Do ##class(Dim.VistaFilev001).BuildSite(oSite)
+			//Write "Dim.VistaFieldv0011",!
 			Do ##class(Dim.VistaFieldv001).BuildSite(oSite)
+			//Write "Dim.LocalDrug50v001",!
+			Do ##class(Dim.LocalDrug50v001).BuildSite(oSite)
+			//Write "Dim.NationalDrugFile506v001",!
+			Do ##class(Dim.NationalDrugFile506v001).BuildSite(oSite)
+			//Write "Allergy.Allergy1208v001",!
+			Do ##class(Allergy.Allergy1208v001).BuildSite(oSite)
 		}
 		Set Sta3n=$Order(Site(Sta3n))
 	}
