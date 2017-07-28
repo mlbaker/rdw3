@@ -85,9 +85,21 @@ ClassMethod Initialize()
 	Do oref.%Save()
 	
 	Set oref=..%New()
+	Set oref.ObjectToLoad="RxOut.RxOutpatOriginalFill52v001"
+	Do oref.%Save()
+	
+	Set oref=..%New()
+	Set oref.ObjectToLoad="RxOut.RxOutpatReFill521v001"
+	Do oref.%Save()
+	
+	Set oref=..%New()
+	Set oref.ObjectToLoad="RxOut.RxOutpatPartialFill522v001"
+	Do oref.%Save()
+	
+	Set oref=..%New()
 	Set oref.ObjectToLoad="PAMPI.PatientInfo"
 	Do oref.%Save()	
-	
+
 	Do ..SetupServer()
 }
 
@@ -136,13 +148,33 @@ ClassMethod SetupServerCSP()
 
 ClassMethod SetupClient()
 {
+	Set cName=$Piece($SYSTEM,":",1)
+	Set file=##class(%File).%New("/rdwClient/SeverSetup_"_cName_".txt")
+	Do file.Open("NWS")
+	Do file.WriteLine($ZDateTime($H))
+	Do file.WriteLine("SetupClientDatabases")
 	Do ..SetupClientDatabases()
+	Do file.WriteLine($ZDateTime($H))
+	Do file.WriteLine("SetupClientGlobalMapping")
 	Do ..SetupClientGlobalMapping()
+	Do file.WriteLine($ZDateTime($H))
+	Do file.WriteLine("SetupClientRoutineMapping")
 	Do ..SetupClientRoutineMapping()
+	Do file.WriteLine($ZDateTime($H))
+	Do file.WriteLine("SetupClientJournalDirectory")
 	Do ..SetupClientJournalDirectory()
+	Do file.WriteLine($ZDateTime($H))
+	Do file.WriteLine("Add Journal File Task")
 	Do ..AddJFileTask()
+	Do file.WriteLine($ZDateTime($H))
+	Do file.WriteLine("Loading VISTA Globals...")
 	Do ..LoadGlobals()
+	Do file.WriteLine($ZDateTime($H))
+	Do file.WriteLine("Populating Data Warehouse...")
 	Job ..PopulateDW()
+	Do file.WriteLine($ZDateTime($H))
+	Do file.Close()
+	//Do ##class(%File).Delete("/rdwClient/SeverSetup_"_cName_".txt")
 }
 
 ClassMethod SetupClientDatabases()
@@ -255,20 +287,40 @@ ClassMethod PopulateDW()
 	Set Sta3n=$Order(Site(0))
 	While +Sta3n {
 		Set oSite=##class(RDW.VistaSite).%OpenId(Sta3n)
+		Set statusFile=##class(%File).%New("/rdwClient/RDW_Site_"_oSite.Sta3n_".txt")
+		Do statusFile.Open("NWS")
 		If $IsObject(oSite) {
-			//Write !,"SPatient.SPatient2v001",!
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("SPatient.SPatient2v001")
 			Do ##class(SPatient.SPatient2v001).BuildSite(oSite)
-			//Write "Dim.VistaFilev001",!
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("Dim.VistaFilev001")
 			Do ##class(Dim.VistaFilev001).BuildSite(oSite)
-			//Write "Dim.VistaFieldv0011",!
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("Dim.VistaFieldv0011")
 			Do ##class(Dim.VistaFieldv001).BuildSite(oSite)
-			//Write "Dim.LocalDrug50v001",!
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("Dim.LocalDrug50v001")
 			Do ##class(Dim.LocalDrug50v001).BuildSite(oSite)
-			//Write "Dim.NationalDrugFile506v001",!
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("Dim.NationalDrugFile506v001")
 			Do ##class(Dim.NationalDrugFile506v001).BuildSite(oSite)
-			//Write "Allergy.Allergy1208v001",!
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("Allergy.Allergy1208v001")
 			Do ##class(Allergy.Allergy1208v001).BuildSite(oSite)
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("RxOut.RxOutpatOriginalFill52v001")
+			Do ##class(RxOut.RxOutpatOriginalFill52v001).BuildSite(oSite)
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("RxOut.RxOutpatReFill521v001")
+			Do ##class(RxOut.RxOutpatReFill521v001).BuildSite(oSite)
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("RxOut.RxOutpatPartialFill522v001")
+			Do ##class(RxOut.RxOutpatPartialFill522v001).BuildSite(oSite)
+			Do statusFile.WriteLine($ZDateTime($H))
+			Do statusFile.WriteLine("Done.")
 		}
+		Do statusFile.Close()
 		Set Sta3n=$Order(Site(Sta3n))
 	}
 }
