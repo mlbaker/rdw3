@@ -278,8 +278,60 @@ ClassMethod UpdatePatientRxPartialFillList(pt As SPatient.SPatient2v001, rx As R
 	Quit Status
 }
 
+ClassMethod OutputXML(ToFile as %Boolean, Patient As PAMPI.PatientInfo)
+{
+		Set writer=##class(%XML.Writer).%New()
+		Set writer.Summary=1
+		Set writer.Indent=2
+		If ToFile {
+			Set filename="/rdwClient/PatientInfo_"_ptId_".xml"
+			Do Writer.OutputToFile(filename)
+		}
+		Do writer.RootObject(Patient)
+}
+
+ClassMethod UpdateSummaryList(SummaryList As %String)
+{
+	Set classDef = ##class(%Dictionary.ClassDefinition).%OpenId(..%ClassName(1))
+	If $IsObject(classDef)
+	{
+		Set param=##class(%Dictionary.ParameterDefinition).%New()
+		Set param.Name="XMLSUMMARY"
+		Set param.Default=SummaryList
+		Do classDef.Parameters.Insert(param)
+		Do classDef.%Save()
+		Do $system.OBJ.Compile(..%ClassName(1),"ck")
+	}
+}
+
+ClassMethod RemoveSummaryList() 
+{
+	Set classDef = ##class(%Dictionary.ClassDefinition).%OpenId(..%ClassName(1))
+	If $IsObject(classDef)
+	{
+		Set num=classDef.Parameters.Count()
+		If num>0 {
+			For i=1:1:num {
+				Set param=classDef.Parameters.GetAt(i)
+				Set id=param.%Id()
+				Do:id["XMLSUMMARY" ##class(%Dictionary.ParameterDefinition).%DeleteId(id,4)
+			}
+			Do $system.OBJ.Compile(..%ClassName(1),"ck")
+		}
+	}
+}
 
 
+
+ClassMethod OutputPatientToXML(PatientID As %Integer=1,SummaryType As %Integer=1,ToFile As %Boolean=0) As %String
+{
+	
+	Set SummaryList="PatientID,SSN,FullICN,"_$Case(SummaryType,1:"VistaSiteList",2:"PatientList",3:"AllergyList",4:"RxOutpatOriginalFillList",:"")
+	Do:SummaryType>0 ..UpdateSummaryList(SummaryList)
+	Set Patient=..%OpenId(PatientID)
+	Do:$IsObject(Patient) ..OutputXML(ToFile,Patient)
+	Do ..RemoveSummaryList()
+}
 Storage Default
 {
 <Data name="PatientInfoDefaultData">

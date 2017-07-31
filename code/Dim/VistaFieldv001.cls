@@ -21,7 +21,7 @@ Property GlobalNode As %String(MAXLEN = 350);
 
 Property GlobalPiece As %Integer;
 
-Property FieldCodes As %String(MAXLEN = 250);
+Property PointedToFileNumber As %String(MAXLEN = 250);
 
 Property SubFileNumber As %String;
 
@@ -108,6 +108,7 @@ ClassMethod UpdateObject(VistaSite As RDW.VistaSite, FMPK As %String) As %String
 	Set $Bit(BitFlag,9)=oref.setGlobalPiece(VistaSite.VistaSiteNamespace,VistaFileNumber,VistaFieldNumber)
 	Set $Bit(BitFlag,10)=oref.setParentVistaFile(VistaSite.VistaSiteNamespace,VistaFileNumber,VistaFieldNumber)
 	Set $Bit(BitFlag,11)=oref.setGlobalNode(VistaSite.VistaSiteNamespace,VistaFileNumber,VistaFieldNumber)
+	Set $Bit(BitFlag,12)=oref.setPointedToFileNumber(VistaSite.VistaSiteNamespace,VistaFileNumber,VistaFieldNumber)
 	
 	If $BitFind(BitFlag,1) {
 		// Something changed.
@@ -149,8 +150,6 @@ Method setVistaFieldType(NS As %String, VistaFileNumber As %String, VistaFieldNu
 		Set VistaFieldType="Pointer"
 	} ElseIf VistaFieldType["W" {
 		Set VistaFieldType="WordProcessing"
-	} ElseIf VistaFieldType["V" {
-		Set VistaFieldType="VariablePointer"
 	} Else {
 		Set VistaFieldType="FreeText"
 	}
@@ -168,9 +167,14 @@ Method setVistaFieldDescription(NS As %String, VistaFileNumber As %String, Vista
 	Set VistaFieldDescription=""
 	Set LineIEN=$Order(^|NS|DD(VistaFileNumber,VistaFieldNumber,21,0))
 	While +LineIEN {
-		Set VistaFieldDescription=VistaFieldDescription_$Get(^|NS|DIC(VistaFileNumber,VistaFieldNumber,21,LineIEN,0))_$C(13)
+		Set VistaFieldDescription=VistaFieldDescription_$Get(^|NS|DD(VistaFileNumber,VistaFieldNumber,21,LineIEN,0))_$C(13)
 		Set LineIEN=$Order(^|NS|DD(VistaFileNumber,VistaFieldNumber,"21",LineIEN))
 	}
+	
+	If $Length(VistaFieldDescription)>8000 {
+		Set VistaFieldDescription=$Extract(VistaFieldDescription,1,8000)
+	}
+	
 	If ..VistaFieldDescription'=VistaFieldDescription {
 		Set ..VistaFieldDescription=VistaFieldDescription
 		Set Flag=1
@@ -299,6 +303,21 @@ Method setGlobalNode(NS As %String, VistaFileNumber As %String, VistaFieldNumber
 	Quit Flag
 }
 
+Method setPointedToFileNumber(NS As %String, VistaFileNumber As %String, VistaFieldNumber As %String) As %Integer
+{
+	Set Flag=0
+	Quit:..VistaFieldType'="Pointer" Flag
+	
+	Set PointedToFileNumber=+$Piece($Piece($Get(^|NS|DD(VistaFileNumber,VistaFieldNumber,0)),"^",2),"P",2)
+	Quit:'+PointedToFileNumber Flag
+	
+	If ..PointedToFileNumber'=PointedToFileNumber {
+		Set ..PointedToFileNumber=PointedToFileNumber
+		Set Flag=1
+	}
+	Quit Flag
+}
+
 Storage Default
 {
 <Data name="VistaFieldv001DefaultData">
@@ -327,7 +346,7 @@ Storage Default
 <Value>GlobalPiece</Value>
 </Value>
 <Value name="9">
-<Value>FieldCodes</Value>
+<Value>PointedToFileNumber</Value>
 </Value>
 <Value name="10">
 <Value>SubFileNumber</Value>

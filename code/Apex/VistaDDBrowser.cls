@@ -46,7 +46,7 @@ XData Style
       	background-image: url(images/docindexgradient.png);
       	background-repeat: repeat-y;
       	height: 700px;
-      	width: 950px;
+      	width: 800px;
       	overflow: auto;
       }
       #vgroup2 {
@@ -62,7 +62,7 @@ XData Style
         font-size: 1.2em;
         font-weight: bold;
         padding: 5px;
-        width: 940px;
+        width: 790px;
         border-bottom: 1px solid black;
         text-align: center;
       }
@@ -91,6 +91,10 @@ XData Contents [ XMLNamespace = "http://www.intersystems.com/zen" ]
       			<label id="fieldType" />
       			<spacer height="25"/>
       			<label id="global" />
+      			<spacer height="25"/>
+      			<label id="fldCodes" />
+      			<spacer height="25"/>
+      			<label id="fldDescription" />
       		</vgroup>
       	</hgroup>
       </hgroup>
@@ -151,6 +155,8 @@ ClientMethod treeClick(tree) [ Language = javascript ]
 	var fileNumLabel = this.getComponentById('fileNum');
 	var fldTypeLabel = this.getComponentById('fieldType');
 	var globalLabel = this.getComponentById('global');
+    var fldCodesLabel = this.getComponentById('fldCodes');
+    var fldDescription = this.getComponentById('fldDescription');
     var index=tree.getProperty('selectedIndex');
     var parent=tree.getNodeParent(index);
     var fileNum=tree.getNodeValue(parent);
@@ -164,20 +170,21 @@ ClientMethod treeClick(tree) [ Language = javascript ]
         var global='$Piece($Get(^|NS|'+fldAtts.split('^')[1]+'),"^",'+fldAtts.split('^')[2]+')'
         fldTypeLabel.setValue('VISTA Field Type: '+fldAtts.split('^')[0]);
         globalLabel.setValue('VISTA Global Location: '+global);
-        
+        fldCodesLabel.setValue('VISTA Field Codes: '+fldAtts.split('^')[3]);
+        fldDescription.setValue('VISTA Field Description: '+fldAtts.split('^')[4]);
 	}
 }
 
 ClassMethod GetFieldInfo(fileNum As %String, fieldNum As %String) As %String [ ZenMethod ]
 {
 	Set return=fileNum_"~"_fieldNum
-	Set sql="SELECT VistaFieldType, GlobalNode , GlobalPiece FROM Dim.VistaFieldv001 "_
+	Set sql="SELECT VistaFieldType, GlobalNode , GlobalPiece, VistaFieldCodes, VistaFieldDescription FROM Dim.VistaFieldv001 "_
 		"WHERE VistaFileNumber='"_fileNum_"' AND VistaFieldNumber='"_fieldNum_"' AND VistaSite=516"
 	Set tStatement=##class(%SQL.Statement).%New()
 	Set Status=tStatement.%Prepare(sql)
 	Set rSet=tStatement.%Execute()
 	While rSet.%Next() {
-		Set return=rSet.VistaFieldType_rSet.GlobalNode_"^"_rSet.GlobalPiece
+		Set return=rSet.VistaFieldType_rSet.GlobalNode_"^"_rSet.GlobalPiece_"^"_rSet.VistaFieldCodes_"^"_rSet.VistaFieldDescription
 	}
 	Quit return
 }

@@ -100,6 +100,10 @@ ClassMethod Initialize()
 	Set oref.ObjectToLoad="PAMPI.PatientInfo"
 	Do oref.%Save()	
 
+	Set oref=..%New()
+	Set oref.ObjectToLoad="RDW.RDWInstaller"
+	Do oref.%Save()	
+	
 	Do ..SetupServer()
 }
 

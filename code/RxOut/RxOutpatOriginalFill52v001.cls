@@ -1,5 +1,8 @@
 Class RxOut.RxOutpatOriginalFill52v001 extends (%Persistent, %XML.Adaptor) [ SqlTableName = RxOutpatOriginalFill_52_v001 ]
 {
+
+Parameter XMLSUMMARY="VistaSite,DaysSupply,DispensedDate,ExpirationDate,FillDateTime,LoginDate,LocalDrug";
+
 Property BillingEligibility As %String;
 
 Property BingoWaitTime As %Numeric;

@@ -1,5 +1,8 @@
 Class Allergy.Allergy1208v001 extends (%Persistent, %XML.Adaptor) [ SqlTableName = Allergy_120_8_v001 ]
 {
+
+Parameter XMLSUMMARY="VistaSite,AllergicReactant,AllergyType,EnteredInErrorFlag,EnteredInErrorDateTime,Mechanism,ObservedHistorical,VerifiedFlag";
+
 Property AllergicReactant As %String( MAXLEN = 8000) [ SqlFieldName = AllergicReactant ];
 
 Property AllergyIEN As %String;

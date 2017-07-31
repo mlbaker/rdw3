@@ -23,13 +23,19 @@ Create-RDW-Directories
 [string]$dir = Get-Location
 
 $a = new-object -comobject wscript.shell 
-$intAnswer = $a.popup("Do you want to extract Globals?", ` 
+$intAnswer1 = $a.popup("Do you want to extract Globals?", ` 
 0,"Extracting Globals",4) 
-If ($intAnswer -eq 6) { 
+If ($intAnswer1 -eq 6) { 
     Expand-ZIPFile –File “$dir\VistaGlobals.zip” –Destination "$dir\client\globals"
     Expand-ZIPFile –File “$dir\VistaRoutines.zip” –Destination "$dir\client\routines"
 } 
 
+$a = new-object -comobject wscript.shell 
+$intAnswer2 = $a.popup("Do you want to extract Databases?", ` 
+0,"Extracting Globals",4) 
+If (($intAnswer2 -eq 6)-and($intAnswer1 -ne 6)) { 
+    Expand-ZIPFile –File “$dir\databases.zip” –Destination "$dir"
+} 
 
 docker-compose up -d rdw
 
@@ -53,8 +59,10 @@ While (1 -eq 1) {
     Start-Sleep -s 1
 }
 
-docker exec -it rdw /scripts/mountPoints.sh
-docker exec -it rdw /scripts/dbDirectory.sh
+If ($intAnswer2 -ne 6) { 
+	docker exec -it rdw /scripts/mountPoints.sh
+	docker exec -it rdw /scripts/dbDirectory.sh
+}
 
 Start-Sleep -s 10
 docker-compose up -d cachev08
