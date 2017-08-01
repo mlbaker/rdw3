@@ -15,6 +15,7 @@ Property RecordsFound As %Integer;
 
 ClassMethod Initialize()
 {
+	Do ..%KillExtent()
 }
 
 ClassMethod StartJournalReader()
@@ -23,7 +24,7 @@ ClassMethod StartJournalReader()
 	Set tStatement=##class(%SQL.Statement).%New()
 	Set insId=##class(RDW.CacheInstance).GetInstanceId()
 	Set sql="SELECT ID,FileClosed FROM RDW.JournalFile WHERE CacheInstance="_insId_
-	" AND FileClosed=1 AND CurrentlyReadingFile IS NULL"
+	" AND FileClosed=1 AND CurrentlyReadingFile IS NULL AND EntireFileRead IS NULL"
 	Set Status=tStatement.%Prepare(sql)
 	Quit:'+Status
 	Set rSet=tStatement.%Execute()

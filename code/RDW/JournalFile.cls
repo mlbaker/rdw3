@@ -17,6 +17,7 @@ Index JournalFileNameIndex On (CacheInstance, JournalFileName);
 
 ClassMethod Initialize()
 {
+	Do ..%KillExtent()
 }
 
 ClassMethod AddNewFiles()
@@ -50,6 +51,10 @@ ClassMethod AddNewFiles()
 			Kill oJFile
 		}
 	}
+}
+
+ClassMethod CloseCurrentFile() {
+	Set Status=##class(%SYS.Journal.System).SwitchFile()
 }
 
 Storage Default

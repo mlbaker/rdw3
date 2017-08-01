@@ -284,8 +284,8 @@ ClassMethod OutputXML(ToFile as %Boolean, Patient As PAMPI.PatientInfo)
 		Set writer.Summary=1
 		Set writer.Indent=2
 		If ToFile {
-			Set filename="/rdwClient/PatientInfo_"_ptId_".xml"
-			Do Writer.OutputToFile(filename)
+			Set filename="/scripts/PatientInfo_"_Patient.%Id()_".xml"
+			Do writer.OutputToFile(filename)
 		}
 		Do writer.RootObject(Patient)
 }

@@ -18,7 +18,11 @@ Class RDW.DataFilerQueue Extends %Persistent {
 
 	Index OrderIndex On (JournalFile,JournalFileOffset);
 
-ClassMethod AddEntry(CacheInstance As RDW.CacheInstance,OperationType As %String,JournalFile As RDW.JournalFile,ClassName As %String,VistaSite As RDW.VistaSite,PrimaryKeys As %String) As %String  {
+ClassMethod Initialize() {
+	Do ..%KillExtent()
+}
+
+ClassMethod AddEntry(CacheInstance As RDW.CacheInstance,OperationType As %String,JournalFile As RDW.JournalFile,ClassName As %String,VistaSite As RDW.VistaSite,PrimaryKeys As %String, JournalFileOffset As %Integer) As %String  {
 	Quit:$Data(^RDW.DataFilerQueueD(CacheInstance.CacheInstanceID,OperationType,JournalFile.%Id(),ClassName,VistaSite.Sta3n,PrimaryKeys)) "1^Already in Queue"
 	Set oDFQ=..%New()
 	Set oDFQ.CacheInstance=CacheInstance
@@ -27,6 +31,7 @@ ClassMethod AddEntry(CacheInstance As RDW.CacheInstance,OperationType As %String
 	Set oDFQ.ClassName=ClassName
 	Set oDFQ.VistaSite=VistaSite
 	Set oDFQ.PrimaryKeys=PrimaryKeys
+	Set oDFQ.JournalFileOffset=JournalFileOffset
 	Set Status=oDFQ.%Save()
 	Quit Status
 }

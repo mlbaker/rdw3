@@ -67,14 +67,14 @@ ClassMethod ReadFile(jR As RDW.JournalReader)
 								//Get The PrimaryKeys from the Global Subscripts...
 								Set PKIEN=..GetPrimaryKeys(GTW,jRec)
 								Set ClassName=GTW.ClassName
-								Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN)
+								Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN,jRec.Address)
 							}
 						} Else {
 							// DELETE encountered.
 							If (GlobalNumSubs=GTW.NumberOfSubscripts)!(GlobalNumSub=GTW.NumberOfSubscripts-1) {
 								Set PKIEN=..GetPrimaryKeys(GTW,jRec)
 								Set ClassName=GTW.ClassName
-								Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN)
+								Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN,jRec.Address)
 							}
 						}
 						Set GTWId=$Order(^RDW.GlobalsToWatch("GlobalNameIndex",Global,GTWId))

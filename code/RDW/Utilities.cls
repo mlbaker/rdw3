@@ -70,4 +70,20 @@ ClassMethod PatientToXML(ptId As %String)
 	Set Writer.Indent=2
 	Do Writer.RootObject(pt)
 }
+
+ClassMethod UpdatePatient(NS As %String="bay")
+{
+	//First import Routines
+	Set oldNS=$NAMESPACE
+	Write "Do you need to import Routines? "
+	Read Ans
+	Do:$ZCONVERT(Ans,"U")["Y" ##class(RDW.Utilities).ImportRoutines(NS)
+	//Close Journal File...
+	Do ##class(RDW.JournalFile).CloseCurrentFile()
+	ZN NS
+	Set DUZ=1
+	D P^DI
+	ZN oldNS
+	Do ##class(RDW.JournalFile).CloseCurrentFile()
+}
 }

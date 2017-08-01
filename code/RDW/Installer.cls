@@ -53,6 +53,10 @@ ClassMethod Initialize()
 	Do oref.%Save()
 	
 	Set oref=..%New()
+	Set oref.ObjectToLoad="RDW.DataFilerQueue"
+	Do oref.%Save()
+	
+	Set oref=..%New()
 	Set oref.ObjectToLoad="Dim.VistaFilev001"
 	Do oref.%Save()
 	
@@ -67,6 +71,10 @@ ClassMethod Initialize()
 	Set oref=..%New()
 	Set oref.ObjectToLoad="RDW.Utilities"
 	Do oref.%Save()
+	
+	Set oref=..%New()
+	Set oref.ObjectToLoad="RDW.Tasks"
+	Do oref.%Save()	
 	
 	Set oref=..%New()
 	Set oref.ObjectToLoad="Apex.VistaDDBrowser"
@@ -103,6 +111,8 @@ ClassMethod Initialize()
 	Set oref=..%New()
 	Set oref.ObjectToLoad="RDW.RDWInstaller"
 	Do oref.%Save()	
+	
+	
 	
 	Do ..SetupServer()
 }
@@ -169,7 +179,7 @@ ClassMethod SetupClient()
 	Do ..SetupClientJournalDirectory()
 	Do file.WriteLine($ZDateTime($H))
 	Do file.WriteLine("Add Journal File Task")
-	Do ..AddJFileTask()
+	Do ..AddTasks()
 	Do file.WriteLine($ZDateTime($H))
 	Do file.WriteLine("Loading VISTA Globals...")
 	Do ..LoadGlobals()
@@ -366,23 +376,10 @@ ClassMethod LoadGlobals()
 	}
 }
 
-ClassMethod AddJFileTask() As %String
+ClassMethod AddTasks() 
 {
-	Set task=##Class(%SYS.Task).%New()
-	Set task.Name="AddJournalFiles"
-	Set task.Description="Add New Journal Files to list"
-	Set task.NameSpace="RDW"  // Namespace the task will run in
-	Set task.DailyFrequency=task.DailyFrequencyDisplayToLogical("Several")
-	Set task.DailyFrequencyTime=0 //minutes
-	Set task.DailyIncrement=10  // (every 1 hour or minutes depending on DailyFrequencyTime)
-	Set task.DailyStartTime=0
-	Set task.DailyEndTime=0
-	Set task.Expires=0
-	Set task.TaskClass="%SYS.Task.RunLegacyTask"
-	Set task.Settings=$lb("ExecuteCode","Do ##class(RDW.JournalFile).AddNewFiles()")
-	Set task.StartDate=+$H
-	Set task.RunAsUser="_SYSTEM"
-	Quit task.%Save()
+	Do ##class(RDW.Tasks).AddJFileTask()
+	Do ##class(RDW.Tasks).AddJournalReaderTask()
 }
 
 Storage Default

@@ -479,21 +479,22 @@ ClassMethod CreateDatabaseDirectoryScript()
 	While rSet.%Next() {
 		If instId'=rSet.CacheInstance {
 			Set instId=rSet.CacheInstance
-			Do file.WriteLine("mkdir /cachejrn/v"_$Extract((100+instId),2,3))
-			Do dbfile.WriteLine("mkdir /cachejrn/v"_$Extract((100+instId),2,3)_"/jrn")
-			Do file.WriteLine("mkdir /cachedb/v"_$Extract((100+instId),2,3))
-			Do file.WriteLine("mkdir /cachedb/v"_$Extract((100+instId),2,3)_"/cachesys")
+			
+			Do file.WriteLine("[ ! -d /cachejrn/v"_$Extract((100+instId),2,3)_" ] && mkdir /cachejrn/v"_$Extract((100+instId),2,3))
+			Do dbfile.WriteLine("[ ! -d /cachejrn/v"_$Extract((100+instId),2,3)_"/jrn ] && mkdir /cachejrn/v"_$Extract((100+instId),2,3)_"/jrn")
+			Do file.WriteLine("[ ! -d /cachedb/v"_$Extract((100+instId),2,3)_" ] && mkdir /cachedb/v"_$Extract((100+instId),2,3))
+			Do file.WriteLine("[ ! -d /cachedb/v"_$Extract((100+instId),2,3)_"/cachesys ] && mkdir /cachedb/v"_$Extract((100+instId),2,3)_"/cachesys")
 		}
 		If Sta3a'=rSet.Sta3a {
 			Set Sta3a=rSet.Sta3a
-			Do dbfile.WriteLine("mkdir /cachejrn/v"_$Extract((100+instId),2,3)_"/"_Sta3a)
-			Do file.WriteLine("mkdir /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a)
-			Do dbfile.WriteLine("mkdir /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a_"/rou")
+			Do dbfile.WriteLine("[ ! -d /cachejrn/v"_$Extract((100+instId),2,3)_"/"_Sta3a_" ] && mkdir /cachejrn/v"_$Extract((100+instId),2,3)_"/"_Sta3a)
+			Do file.WriteLine("[ ! -d /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a_" ] && mkdir /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a)
+			Do dbfile.WriteLine("[ ! -d /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a_"/rou ] && mkdir /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a_"/rou")
 		}
 		Set LastLetter=$Ascii($Extract(rSet.LastDB,3))
 		For i=97:1:LastLetter {
 			Set Database="v"_$C(i)_$C(i)
-			Do dbfile.WriteLine("mkdir /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a_"/"_Database)
+			Do dbfile.WriteLine("[ ! -d /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a_"/"_Database_" ] && mkdir /cachedb/v"_$Extract((100+instId),2,3)_"/"_Sta3a_"/"_Database)
 		}
 	}
 	Do file.Close()
