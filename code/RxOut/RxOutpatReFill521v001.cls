@@ -112,17 +112,23 @@ ClassMethod RemoveObject(VistaSite As RDW.VistaSite, FMPK As %String) As %String
 {
 	Set Status=1
 	Set RxOutpatIEN=$Piece(FMPK,",",1)
-	Quit:'+RxOutpatIEN "1^ RxOutpatIEN: "_RxOutpatIEN_" is NOT a number."
+	Quit:'+RxOutpatIEN "1" // RxOutpatIEN is not a number,  Should never get here as this is checked in JournalReader.
 	
 	Set RxOutpatRefillIEN=$Piece(FMPK,",",2)
-	Quit:'+RxOutpatRefillIEN "1^ RxOutpatRefillIEN: "_RxOutpatRefillIEN_" is NOT a number."
+	Quit:'+RxOutpatRefillIEN "1" // RxOutpatPartialFillIEN is not a number,  Should never get here as this is checked in JournalReader.
 
-	If ($Get(^|Sta3a|PSRX(RxOutpatIEN,1,RxOutpatRefillIEN,0))="")
-	
-	Quit:$Get(^|VistaSite.VistaSiteNamespace|PSRX(RxOutpatIEN,1,RxOutpatRefillIEN,0))'="" "1^ "_RxOutpatIEN_" is not deleted." 
+	Quit:$Get(^|VistaSite.VistaSiteNamespace|PSRX(RxOutpatIEN,1,RxOutpatRefillIEN,0))'="" "1" // Record at RxOutpatIEN,"P",RxOutpatRefillIEN is not deleted.
 	Set id=VistaSite.Sta3n_"||"_RxOutpatIEN_"||"_RxOutpatRefillIEN
 
-	Set oref=..%OpenId(id,4)
+	Set oref=..%OpenId(id,4,.Status)
+	If '$$$ISOK(Status) {
+		If $System.Status.GetErrorCodes(Status)'=5809 {
+			// Error is not because the object does not exist.  Probably can't get lock.
+			Quit Status
+		} Else {
+			Quit 1 // Error is because record does not exist so don't have to delete.
+		}
+	} // Either got lock or object does not exist.
 	
 	If $IsObject(oref) {
 		Set oref.OpCode="D"
@@ -137,13 +143,20 @@ ClassMethod UpdateObject(VistaSite As RDW.VistaSite, FMPK As %String) As %String
 {
 	Set Status=1
 	Set RxOutpatIEN=$Piece(FMPK,",",1)
-	Quit:'+RxOutpatIEN "1^ RxOutpatIEN: "_RxOutpatIEN_" is NOT a number."
+	Quit:'+RxOutpatIEN "1" // RxOutpatIEN is not a number,  Should never get here as this is checked in JournalReader.
 	
 	Set RxOutpatRefillIEN=$Piece(FMPK,",",2)
-	Quit:'+RxOutpatRefillIEN "1^ RxOutpatRefillIEN: "_RxOutpatRefillIEN_" is NOT a number."
+	Quit:'+RxOutpatRefillIEN "1" // RxOutpatPartialFillIEN is not a number,  Should never get here as this is checked in JournalReader.
 
 	Set id=VistaSite.Sta3n_"||"_RxOutpatIEN_"||"_RxOutpatRefillIEN
-	Set oref=..%OpenId(id,4)
+	
+	Set oref=..%OpenId(id,4,.Status)
+	If '$$$ISOK(Status) {
+		If $System.Status.GetErrorCodes(Status)'=5809 {
+			// Error is not because the object does not exist.  Probably can't get lock.
+			Quit Status
+		}
+	} // Either got lock or object does not exist.
 	
 	If '$IsObject(oref) {
 		Set oref=..%New()

@@ -21,6 +21,10 @@ ClassMethod Initialize()
 	&sql(INSERT INTO RDW.GlobalsToWatch(GlobalName,ClassName,NumberOfSubscripts,PrimaryKeys,SubscriptCompare,FirstSubscript) VALUES('^DPT','SPatient.SPatient2v001',2,'1',NULL,NULL))
 	&sql(INSERT INTO RDW.GlobalsToWatch(GlobalName,ClassName,NumberOfSubscripts,PrimaryKeys,SubscriptCompare,FirstSubscript) VALUES('^DIC','Dim.VistaFilev001',2,'1','2:"0"',NULL))
 	&sql(INSERT INTO RDW.GlobalsToWatch(GlobalName,ClassName,NumberOfSubscripts,PrimaryKeys,SubscriptCompare,FirstSubscript) VALUES('^DD','Dim.VistaFieldv001',3,'1,2,','3:"0"',NULL))
+	&sql(INSERT INTO RDW.GlobalsToWatch(GlobalName,ClassName,NumberOfSubscripts,PrimaryKeys,SubscriptCompare,FirstSubscript) VALUES('^PSRX','RxOut.RxOutpatOriginalFill52v001',2,'1',NULL,NULL))
+	&sql(INSERT INTO RDW.GlobalsToWatch(GlobalName,ClassName,NumberOfSubscripts,PrimaryKeys,SubscriptCompare,FirstSubscript) VALUES('^PSRX','RxOut.RxOutpatReFill521v001',4,'1,3','3:"1"',NULL))
+	&sql(INSERT INTO RDW.GlobalsToWatch(GlobalName,ClassName,NumberOfSubscripts,PrimaryKeys,SubscriptCompare,FirstSubscript) VALUES('^PSRX','RxOut.RxOutpatPartialFill522v001',4,'1,3','3:"P"',NULL))
+	&sql(INSERT INTO RDW.GlobalsToWatch(GlobalName,ClassName,NumberOfSubscripts,PrimaryKeys,SubscriptCompare,FirstSubscript) VALUES('^GMR','Allergy.Allergy1208v001',3,'2',NULL,'120.8'))
 }
 
 Storage Default

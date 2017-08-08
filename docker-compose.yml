@@ -1,7 +1,7 @@
 version: "2"
 services:
   rdw:
-    image: health-share:2017.1
+    image: cache:2017.1
     container_name: rdw
     hostname: rdw
     environment:
@@ -87,7 +87,7 @@ services:
   cachev10:
     image: cache:2017.1
     container_name: cachev10
-    hostname: cachev010
+    hostname: cachev10
     depends_on:
       - "rdw"
     environment:

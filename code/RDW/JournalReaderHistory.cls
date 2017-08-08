@@ -48,6 +48,8 @@ ClassMethod StartJournalReader()
 			}
 		}
 	}
+	Do tStatement.%Close()
+	Do rSet.%Close()
 }
 
 Storage Default

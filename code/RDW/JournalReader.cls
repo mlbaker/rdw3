@@ -40,7 +40,7 @@ ClassMethod ReadFile(jR As RDW.JournalReader)
 		If +jRec {
 			// Are we at EOF?
 			Set NextRec=jRec.NextGet()
-			// While not EOF or AskedToStop
+			// While not EOF and not AskedToStop
 			While (+NextRec)&('jR.SignaledToStop) {
 				// Get the type of operation.
 				Set GlobalOp=jRec.TypeName
@@ -66,16 +66,34 @@ ClassMethod ReadFile(jR As RDW.JournalReader)
 							If GlobalNumSubs=GTW.NumberOfSubscripts {
 								//Get The PrimaryKeys from the Global Subscripts...
 								Set PKIEN=..GetPrimaryKeys(GTW,jRec)
-								Set ClassName=GTW.ClassName
-								Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN,jRec.Address)
-							}
+								If +PKIEN {
+									Set ClassName=GTW.ClassName
+									Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN,jRec.Address)
+									If '$$$ISOK(Status) {
+										Do ##class(%SYS.System).WriteToConsoleLog(
+										"Could NOT add entry to DFQ - ClassName: "_ClassName_" PrimaryKeys: "_PKIEN_" VistaSite: "_VistaSite.Sta3n_
+										" JournalFile: "_jR.JournalFile.%Id()_" Journal File Offset: "_jRec.Address,1,2)
+									} Else {
+										Set NumRecs=NumRecs+1
+									}
+								} // Else something in PKIEN was not a positive number, Probably x-ref
+							} // Else this is not for this class and GlobalsToWatch entry.
 						} Else {
 							// DELETE encountered.
-							If (GlobalNumSubs=GTW.NumberOfSubscripts)!(GlobalNumSub=GTW.NumberOfSubscripts-1) {
+							If (GlobalNumSubs=GTW.NumberOfSubscripts)!(GlobalNumSubs=(GTW.NumberOfSubscripts-1)) {
 								Set PKIEN=..GetPrimaryKeys(GTW,jRec)
-								Set ClassName=GTW.ClassName
-								Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN,jRec.Address)
-							}
+								If +PKIEN {
+									Set ClassName=GTW.ClassName
+									Set Status=##class(RDW.DataFilerQueue).AddEntry(jR.JournalFile.CacheInstance,$Extract(GlobalOp,1,1),jR.JournalFile,ClassName,VistaSite,PKIEN,jRec.Address)
+									If '$$$ISOK(Status) {
+										Do ##class(%SYS.System).WriteToConsoleLog(
+										"Could NOT add entry to DFQ - ClassName: "_ClassName_" PrimaryKeys: "_PKIEN_" VistaSite: "_VistaSite.Sta3n_
+										" JournalFile: "_jR.JournalFile.%Id()_" Journal File Offset: "_jRec.Address,1,2)
+									} Else {
+										Set NumRecs=NumRecs+1
+									}
+								} // Else something in PKIEN was not a positive number, Probably x-ref
+							} // Else this is not for this class and GlobalsToWatch entry.
 						}
 						Set GTWId=$Order(^RDW.GlobalsToWatch("GlobalNameIndex",Global,GTWId))
 					}
@@ -87,6 +105,7 @@ ClassMethod ReadFile(jR As RDW.JournalReader)
 				Set jR.SignaledToStop=$Case(##class(RDW.JournalReaderStatus).GetStatus(),"R":0,:1)
 			}
 			If '+NextRec {
+				//If EOF then we are done with this Journal File.  
 				Set jR.EndTime=$ZDateTime($H,3)
 				Set jR.JournalReaderHistory.EndTime=jR.EndTime
 				Set jR.JournalReaderHistory.RecordsFound=NumRecs
@@ -107,7 +126,14 @@ ClassMethod GetPrimaryKeys(GTW As RDW.GlobalsToWatch, jRec As %SYS.Journal.SetKi
 	Set PrimaryKeys=GTW.PrimaryKeys
 	For i=1:1 { 
 		Quit:$Piece(PrimaryKeys,",",i)=""
-		Set PKIEN=PKIEN_$QSubscript(jRec.GlobalNode,$Piece(PrimaryKeys,",",i))_","
+		If +$QSubscript(jRec.GlobalNode,$Piece(PrimaryKeys,",",i))>0 {
+			//Is Subcript is a positive number then it can be an IEN
+			Set PKIEN=PKIEN_$QSubscript(jRec.GlobalNode,$Piece(PrimaryKeys,",",i))_","
+		} Else {
+			//If Subscript is not a positive number then it is not an IEN
+			Set PKIEN="0,"
+			Quit PKIEN
+		}
 	}
 	Quit PKIEN
 }

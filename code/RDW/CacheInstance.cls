@@ -19,13 +19,13 @@ ClassMethod Initialize()
 {
 	Do ..%KillExtent()
 	
-	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(6,6,'HS2017',1972,57772,1))
-	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(7,7,'HS2017',1972,57772,1))
-	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(8,8,'HS2017',1972,57772,1))
-	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(9,9,'HS2017',1972,57772,1))
-	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(10,10,'HS2017',1972,57772,1))
-	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(11,11,'HS2017',1972,57772,1))
-	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(88,88,'HS2017',1972,57772,1))
+	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(6,6,'CACHE',1972,57772,1))
+	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(7,7,'CACHE',1972,57772,1))
+	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(8,8,'CACHE',1972,57772,1))
+	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(9,9,'CACHE',1972,57772,1))
+	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(10,10,'CACHE',1972,57772,1))
+	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(11,11,'CACHE',1972,57772,1))
+	&sql(INSERT INTO RDW.CacheInstance(CacheInstanceID,Server,InstanceName,SuperServerPort,WebServerPort,Active) VALUES(88,88,'CACHE',1972,57772,1))
 }
 
 ClassMethod GetInstanceId()

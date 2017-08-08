@@ -6,21 +6,15 @@ Class RDW.RDWInstaller
 XData SimpleManifest [ XMLNamespace = INSTALLER ]
 {
 <Manifest>
+  <If Condition='(##class(Config.Namespaces).Exists("rdwv4")=0)'>
     <Namespace Name="rdwv4" Create="yes" 
         Code="rdwv4" Data="rdwv4">
       <Configuration>
-      	<If Condition='!##class(%File).Exists("/cachedb/rdw/rdwv4")' >
-        <Database Name="rdwv4" Create="yes" 
-            Dir="/cachedb/rdw/rdwv4"/>
-         </If>
-        <Database Name="fdw_01" Create="yes" 
-            Dir="/cachedb/rdw/fdw_01"/>
-        <Database Name="fdw_priv" Create="yes" 
-            Dir="/cachedb/rdw/fdw_priv"/>
-        <Database Name="fdw_12" Create="yes" 
-            Dir="/cachedb/rdw/fdw_12"/>
-        <Database Name="fdw_10" Create="yes" 
-            Dir="/cachedb/rdw/fdw_10"/>
+      	<Database Name="rdwv4" Create="yes" Dir="/cachedb/rdw/rdwv4"/>
+      	<Database Name="fdw_01" Create="yes" Dir="/cachedb/rdw/fdw_01"/>
+      	<Database Name="fdw_priv" Create="yes" Dir="/cachedb/rdw/fdw_priv"/>
+      	<Database Name="fdw_12" Create="yes" Dir="/cachedb/rdw/fdw_12"/>
+      	<Database Name="fdw_10" Create="yes" Dir="/cachedb/rdw/fdw_10"/>
         <GlobalMapping Global="Dim*" From="fdw_01"/>
         <GlobalMapping Global="SPatient*" From="fdw_priv"/>
         <GlobalMapping Global="RxOut*" From="fdw_12"/>
@@ -42,6 +36,7 @@ XData SimpleManifest [ XMLNamespace = INSTALLER ]
       		Recurse="1"
       		AuthenticationMethods="96"/> 
     </Namespace>
+  </If>
 </Manifest>
 }
 
@@ -58,7 +53,18 @@ ClassMethod setup(ByRef pVars, pLogLevel As %Integer = 3,
 
 ClassMethod Initialize()
 {
-
+	Set oldNS=$NAMESPACE
+	Set ecp=##class(Security.Services).%OpenId("%service_ecp"),ecp.Enabled=1 Do ecp.%Save() //enable ecp service
+	ZN "RDWv4"
+	Do ##class(RDW.Server).Initialize()
+	Do ##class(RDW.CacheInstance).Initialize()
+	Do ##class(RDW.VistaSite).Initialize()
+	Do ##class(RDW.DataFilerQueue).Initialize()
+	Do ##class(RDW.GlobalsToWatch).Initialize()
+	Do ##class(RDW.JournalFile).Initialize()
+	Do ##class(RDW.JournalReaderHistory).Initialize()
+	Do ##class(RDW.JournalReaderStatus).Initialize()
+	ZN oldNS	
 }
 
 }

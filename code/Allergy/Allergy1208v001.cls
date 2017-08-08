@@ -75,13 +75,21 @@ ClassMethod RemoveObject(VistaSite As RDW.VistaSite, FMPK As %String) As %String
 {
 	Set Status=1
 	Set AllergyIEN=$Piece(FMPK,",",1)
-	Quit:'+AllergyIEN "1^ AllergyIEN: "_AllergyIEN_" is NOT a number."
+	Quit:'+AllergyIEN "1" // AllergyIEN is not a number,  Should never get here as this is checked in JournalReader.
 	
-	Quit:$Get(^|VistaSite.VistaSiteNamespace|GMR(120.8,AllergyIEN,0))'="" "1^ "_AllergyIEN_" is not deleted." 
+	Quit:$Get(^|VistaSite.VistaSiteNamespace|GMR(120.8,AllergyIEN,0))'="" "1" // Record at AllergyIEN is not deleted.
 	Set id=VistaSite.Sta3n_"||"_AllergyIEN
 
 	Set oref=..%OpenId(id,4)
-	
+	If '$$$ISOK(Status) {
+		If $System.Status.GetErrorCodes(Status)'=5809 {
+			// Error is not because the object does not exist.  Probably can't get lock.
+			Quit Status
+		} Else {
+			Quit 1 // Error is because record does not exist so don't have to delete.
+		}
+	} // Either got lock or object does not exist.
+
 	If $IsObject(oref) {
 		Set oref.OpCode="D"
 		Set oref.VistaEditDate=$ZDateTime($H,3)
@@ -95,10 +103,17 @@ ClassMethod UpdateObject(VistaSite As RDW.VistaSite, FMPK As %String) As %String
 {
 	Set Status=1
 	Set AllergyIEN=$Piece(FMPK,",",1)
-	Quit:'+AllergyIEN "1^ AllergyIEN: "_AllergyIEN_" is NOT a number."
+	Quit:'+AllergyIEN "1" // AllergyIEN is not a number,  Should never get here as this is checked in JournalReader.
 	
 	Set id=VistaSite.Sta3n_"||"_AllergyIEN
-	Set oref=..%OpenId(id,4)
+	Set oref=..%OpenId(id,4,.Status)
+	
+	If '$$$ISOK(Status) {
+		If $System.Status.GetErrorCodes(Status)'=5809 {
+			// Error is not because the object does not exist.  Probably can't get lock.
+			Quit Status
+		}
+	} // Either got lock or object does not exist yet.
 	
 	If '$IsObject(oref) {
 		Set oref=..%New()

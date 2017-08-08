@@ -16,14 +16,14 @@ Class RDW.DataFilerQueue Extends %Persistent {
 
 	Index MainIndex On (CacheInstance,OperationType,JournalFile,ClassName,VistaSite,PrimaryKeys) [PrimaryKey, IdKey, Unique];
 
-	Index OrderIndex On (JournalFile,JournalFileOffset);
+	Index OrderIndex On (CacheInstance,JournalFile,JournalFileOffset);
 
 ClassMethod Initialize() {
 	Do ..%KillExtent()
 }
 
 ClassMethod AddEntry(CacheInstance As RDW.CacheInstance,OperationType As %String,JournalFile As RDW.JournalFile,ClassName As %String,VistaSite As RDW.VistaSite,PrimaryKeys As %String, JournalFileOffset As %Integer) As %String  {
-	Quit:$Data(^RDW.DataFilerQueueD(CacheInstance.CacheInstanceID,OperationType,JournalFile.%Id(),ClassName,VistaSite.Sta3n,PrimaryKeys)) "1^Already in Queue"
+	Quit:$Data(^RDW.DataFilerQueueD(CacheInstance.CacheInstanceID,OperationType,JournalFile.%Id(),ClassName,VistaSite.Sta3n,PrimaryKeys)) "1" // Record is already in queue for checking
 	Set oDFQ=..%New()
 	Set oDFQ.CacheInstance=CacheInstance
 	Set oDFQ.OperationType=OperationType
