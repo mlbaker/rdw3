@@ -23,19 +23,24 @@ ClassMethod StartJournalReader()
 	
 	Set tStatement=##class(%SQL.Statement).%New()
 	Set insId=##class(RDW.CacheInstance).GetInstanceId()
-	Set sql="SELECT ID,FileClosed FROM RDW.JournalFile WHERE CacheInstance="_insId_
-	" AND FileClosed=1 AND CurrentlyReadingFile IS NULL AND EntireFileRead IS NULL"
+	Set sql="SELECT ID,FileClosed FROM RDW.JournalFile WHERE CacheInstance="_insId_" "_
+	"AND CurrentlyReadingFile IS NULL AND EntireFileRead IS NULL "_
+	"ORDER BY FileClosed DESC, ID "
 	Set Status=tStatement.%Prepare(sql)
 	Quit:'+Status
 	Set rSet=tStatement.%Execute()
+	
 	While rSet.%Next() {
 		Quit:##class(RDW.JournalReaderStatus).GetStatus()'="R"
+		Set StartOffset=0
 		Set jFileId=rSet.ID
-		Set jFile=##class(RDW.JournalFile).%OpenId(jFileId,4)
+		&sql(SELECT TOP 1 EndOffSet INTO :StartOffset FROM RDW.JournalReaderHistory WHERE JournalFile=:jFileId ORDER BY EndTime DESC)		
+		Write jFileId," ",StartOffset,!
+		Set jFile=##class(RDW.JournalFile).%OpenId(jFileId,0)
 		If $IsObject(jFile) {
 			Set oJFH=..%New()
 			Set oJFH.JournalFile=jFile
-			Set oJFH.StartOffset=0
+			Set oJFH.StartOffset=StartOffset
 			Set oJFH.StartTime=$ZDateTime($H,3)
 			Set jFile.CurrentlyReadingFile=1
 			Do jFile.%Save()

@@ -24,33 +24,48 @@ ClassMethod AddNewFiles()
 {
 	Kill jFile
 	Set rSet=##class(%ResultSet).%New("%SYS.Journal.File:ByTimeReverseOrder")
+	Set insId=##class(RDW.CacheInstance).GetInstanceId()
 	Set Status=rSet.Execute()
-	Set cnt=0
+	Set NumFiles=0
+	// Loop through all files seperating file name from directory
 	While rSet.Next() {
+		Set NumFiles=NumFiles+1
 		Set jFile=rSet.Data("Name")
-		For ndx=2:1 {
-			Quit:$Piece(jFile,"/",ndx)=""
-		}
-		Set jFile(cnt)=$Piece(jFile,"/",ndx-1)
-		Set jDir(cnt)=$Piece(jFile,jFile(cnt),1)
-		Set cnt=cnt+1
+		Set jFile(NumFiles)=##class(%File).GetFilename(jFile)
+		Set jDir(NumFiles)=##class(%File).GetDirectory(jFile,1)	
 	}
-	//Write "CurrentFile: ",jDir(0)_jFile(0),!
-	For i=cnt-2:-1:1 {
-		Set insId=##class(RDW.CacheInstance).GetInstanceId()
+	// For each file starting with oldest to newest...
+	For i=NumFiles:-1:1 {
 		Set file=jFile(i)
 		Set id=""
+		// find out if it is already stored in JournalFiles
 		&sql(SELECT ID INTO :id FROM RDW.JournalFile WHERE CacheInstance=:insId AND JournalFileName=:file)
+		// If it is the first time we have seen this file.
 		If id="" {
 			Set oJFile=..%New()
 			Set oJFile.JournalFileName=jFile(i)
 			Set oJFile.DirectoryName=jDir(i)
 			Set oJFile.CacheInstance=##class(RDW.CacheInstance).%OpenId(insId)
-			Set oJFile.FileClosed=1
+			Set:(i>1) oJFile.FileClosed=1
 			Set Status=oJFile.%Save()
 			Kill oJFile
-		}
-	}
+		} Else {  // If it is NOT the first time we have seen this file.
+			Set oFile=..%OpenId(id,4,.sc)
+			Write id,"  ",sc,!
+			// Able to open object for write with lock?
+			If (sc=1) {
+				// If it is not the current/last file.
+				If (i>1) {
+					// If the FileClosed flag is not yet set
+					If ('oFile.FileClosed) {
+						//Set it and save object
+						Set oFile.FileClosed=1
+						Set Status=oFile.%Save()
+					} //If the FileClosed flag is not yet set
+				} // If it is not the current/last file.
+			} // Able to open object for write with lock?
+		} // If it is the first time we have seen this file.
+	} // For each file starting with oldest to newest...
 }
 
 ClassMethod CloseCurrentFile() {

@@ -36,7 +36,11 @@ ClassMethod ReadFile(jR As RDW.JournalReader)
 	Write jFile,!
 	Set NumRecs=0
 	If $IsObject(jFile) {
-		Set jRec=jFile.FirstRecordGet()
+		If (jR.JournalOffset=0) {
+			Set jRec=jFile.FirstRecordGet()
+		} Else {
+			Set jRec=jFile.GetRecordAt(jR.JournalOffset)
+		}
 		If +jRec {
 			// Are we at EOF?
 			Set NextRec=jRec.NextGet()
@@ -105,16 +109,18 @@ ClassMethod ReadFile(jR As RDW.JournalReader)
 				Set jR.SignaledToStop=$Case(##class(RDW.JournalReaderStatus).GetStatus(),"R":0,:1)
 			}
 			If '+NextRec {
-				//If EOF then we are done with this Journal File.  
+				//If EOF then we are done with this Journal File for now.  
 				Set jR.EndTime=$ZDateTime($H,3)
 				Set jR.JournalReaderHistory.EndTime=jR.EndTime
 				Set jR.JournalReaderHistory.RecordsFound=NumRecs
 				Set jR.JournalReaderHistory.EndOffset=jRec.Address
 				Do jR.JournalReaderHistory.%Save()
-				Set jR.JournalFile.EntireFileRead=1
+				If (jRec.Address=jFile.LastRecord.Address)&(jR.JournalFile.FileClosed) {
+					Set jR.JournalFile.EntireFileRead=1
+				}
 				Set jR.JournalFile.CurrentlyReadingFile=""
 				Do jR.JournalFile.%Save()
-			}
+			} 
 		}
 		
 	}
