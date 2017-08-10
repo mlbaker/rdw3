@@ -72,6 +72,19 @@ ClassMethod CloseCurrentFile() {
 	Set Status=##class(%SYS.Journal.System).SwitchFile()
 }
 
+
+Query LongRunningJournalReaders(Threshold As %Integer) As %SQLQuery  [SqlProc, SqlName=LongRunningJournalReaders]
+{
+SELECT jf.ID,jf.JournalFileName,jf.CacheInstance,jrh.StartTime, DATEDIFF(MINUTE,jrh.StartTime,GETDATE()) As ElapsedMinutes
+ FROM RDW.JournalFile jf
+ JOIN RDW.JournalReaderHistory jrh
+ ON jf.ID=jrh.JournalFile
+ WHERE jf.CurrentlyReadingFile=1 
+ AND DATEDIFF(MINUTE,jrh.StartTime,GETDATE())>=:Threshold
+ ORDER BY jf.CacheInstance,jrh.StartTime
+} 
+
+
 Storage Default
 {
 <Data name="JournalFileDefaultData">

@@ -36,19 +36,20 @@ ClassMethod StartJournalReader()
 		Set jFileId=rSet.ID
 		&sql(SELECT TOP 1 EndOffSet INTO :StartOffset FROM RDW.JournalReaderHistory WHERE JournalFile=:jFileId ORDER BY EndTime DESC)		
 		Write jFileId," ",StartOffset,!
-		Set jFile=##class(RDW.JournalFile).%OpenId(jFileId,0)
+		Set jFile=##class(RDW.JournalFile).%OpenId(jFileId,4,.sc)
 		If $IsObject(jFile) {
+			Set jFile.CurrentlyReadingFile=1
+			Do jFile.%Save()
 			Set oJFH=..%New()
 			Set oJFH.JournalFile=jFile
 			Set oJFH.StartOffset=StartOffset
 			Set oJFH.StartTime=$ZDateTime($H,3)
-			Set jFile.CurrentlyReadingFile=1
-			Do jFile.%Save()
 			Set Status=oJFH.%Save()
+			Kill jFile
 			If +Status {
 				Set jr=##class(RDW.JournalReader).New(oJFH)
 				If $IsObject(jr) {
-					Do ##class(RDW.JournalReader).ReadFile(jr)
+					Do jr.ReadFile()
 				}
 			}
 		}
