@@ -7,13 +7,7 @@ Property CacheInstance As RDW.CacheInstance;
 
 Property DirectoryName As %String(COLLATION = "EXACT", MAXLEN = 200);
 
-Property EntireFileRead As %Boolean;
-
-Property CurrentlyReadingFile As %Boolean;
-
-Property FileClosed As %Boolean;
-
-Index JournalFileNameIndex On (CacheInstance, JournalFileName);
+Index MainIndex On (CacheInstance, JournalFileName);
 
 ClassMethod Initialize()
 {
@@ -39,51 +33,51 @@ ClassMethod AddNewFiles()
 		Set file=jFile(i)
 		Set id=""
 		// find out if it is already stored in JournalFiles
-		&sql(SELECT ID INTO :id FROM RDW.JournalFile WHERE CacheInstance=:insId AND JournalFileName=:file)
+		&sql(SELECT f.ID INTO :id FROM RDW.JournalFile f WHERE CacheInstance=:insId AND JournalFileName=:file )
 		// If it is the first time we have seen this file.
 		If id="" {
 			Set oJFile=..%New()
 			Set oJFile.JournalFileName=jFile(i)
 			Set oJFile.DirectoryName=jDir(i)
 			Set oJFile.CacheInstance=##class(RDW.CacheInstance).%OpenId(insId)
-			Set:(i>1) oJFile.FileClosed=1
 			Set Status=oJFile.%Save()
+			Set journalFileId=oJFile.%Id()
+			Do ##class(RDW.JournalFileStatus).CreateStatus(journalFileId)
+			If (i>1) Do ##class(RDW.JournalFileStatus).SetFileClosed(journalFileId)
 			Kill oJFile
 		} Else {  // If it is NOT the first time we have seen this file.
-			Set oFile=..%OpenId(id,4,.sc)
-			Write id,"  ",sc,!
-			// Able to open object for write with lock?
-			If (sc=1) {
-				// If it is not the current/last file.
-				If (i>1) {
-					// If the FileClosed flag is not yet set
-					If ('oFile.FileClosed) {
-						//Set it and save object
-						Set oFile.FileClosed=1
-						Set Status=oFile.%Save()
-					} //If the FileClosed flag is not yet set
-				} // If it is not the current/last file.
-			} // Able to open object for write with lock?
+			If (i>1) { //File is not the newest file
+				Do ##class(RDW.JournalFileStatus).SetFileClosed(id)
+			}  //If File is not the newest file
 		} // If it is the first time we have seen this file.
 	} // For each file starting with oldest to newest...
 }
 
-ClassMethod CloseCurrentFile() {
+ClassMethod CloseCurrentFile()
+{
 	Set Status=##class(%SYS.Journal.System).SwitchFile()
 }
 
-
-Query LongRunningJournalReaders(Threshold As %Integer) As %SQLQuery  [SqlProc, SqlName=LongRunningJournalReaders]
+Query LongRunningJournalReaders(Threshold As %Integer) As %SQLQuery [ SqlName = LongRunningJournalReaders, SqlProc ]
 {
+
 SELECT jf.ID,jf.JournalFileName,jf.CacheInstance,jrh.StartTime, DATEDIFF(MINUTE,jrh.StartTime,GETDATE()) As ElapsedMinutes
  FROM RDW.JournalFile jf
  JOIN RDW.JournalReaderHistory jrh
  ON jf.ID=jrh.JournalFile
- WHERE jf.CurrentlyReadingFile=1 
+ JOIN RDW.JournalFileStatus jfs
+ ON jf.ID=jfs.JournalFileId
+ WHERE jfs.CurrentlyReadingFile=1 
  AND DATEDIFF(MINUTE,jrh.StartTime,GETDATE())>=:Threshold
  ORDER BY jf.CacheInstance,jrh.StartTime
-} 
+}
 
+ClassMethod GetJournalFileCount() As %Integer {
+	Set CacheInstanceId=##class(RDW.CacheInstance).GetInstanceId()
+	Set Count=0
+	&sql(SELECT COUNT(*) INTO :Count FROM RDW.JournalFile WHERE CacheInstance=:CacheInstanceId)
+	Quit Count
+}
 
 Storage Default
 {
@@ -92,24 +86,12 @@ Storage Default
 <Value>%%CLASSNAME</Value>
 </Value>
 <Value name="2">
-<Value>JournalFileName</Value>
-</Value>
-<Value name="3">
-<Value>DockerContainer</Value>
-</Value>
-<Value name="4">
 <Value>DirectoryName</Value>
 </Value>
-<Value name="5">
-<Value>EntireFileRead</Value>
+<Value name="3">
+<Value>JournalFileName</Value>
 </Value>
-<Value name="6">
-<Value>CurrentlyReadingFile</Value>
-</Value>
-<Value name="7">
-<Value>FileClosed</Value>
-</Value>
-<Value name="8">
+<Value name="4">
 <Value>CacheInstance</Value>
 </Value>
 </Data>

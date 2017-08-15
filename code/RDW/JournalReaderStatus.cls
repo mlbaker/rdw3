@@ -29,6 +29,24 @@ ClassMethod GetStatus()
 	Quit Status
 }
 
+ClassMethod SetJournalReaderToStop()
+{
+	Set insId=##class(RDW.CacheInstance).GetInstanceId()
+	Set Status=""
+	&sql(UPDATE RDW.JournalReaderStatus Set Status='S' WHERE CacheInstance=:insId)
+	Set Status=..GetStatus()
+	Quit Status
+}
+
+ClassMethod SetJournalReaderToRun()
+{
+	Set insId=##class(RDW.CacheInstance).GetInstanceId()
+	Set Status=""
+	&sql(UPDATE RDW.JournalReaderStatus Set Status='R' WHERE CacheInstance=:insId)
+	Set Status=..GetStatus()
+	Quit Status
+}
+
 Storage Default
 {
 <Data name="JournalReaderStatusDefaultData">

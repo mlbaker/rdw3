@@ -57,9 +57,9 @@ While (1 -eq 1) {
 
 #Start-Sleep -s 10
 docker-compose up -d cachev06
-docker-compose up -d cachev07
-docker-compose up -d cachev08
-docker-compose up -d cachev09
-docker-compose up -d cachev10
-docker-compose up -d cachev11
-docker-compose up -d cachev88
+#docker-compose up -d cachev07
+#docker-compose up -d cachev08
+#docker-compose up -d cachev09
+#docker-compose up -d cachev10
+#docker-compose up -d cachev11
+#docker-compose up -d cachev88

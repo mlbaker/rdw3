@@ -128,5 +128,48 @@ ClassMethod CreateManifestForInstance(Server As %Integer)
 	Write "    </Configuration>",!,"  </Namespace>",!!,"</Manifest>",!,"}"	
 }
 
+ClassMethod AddDatav6() {
+	s ^|"ash"|DPT(1,0)="BAKER,MICHAEL^M^2570320^^^^^^11122333" //1
+	s ^|"ash"|DPT(1,0)="BAKER,MICHAEL^M^2570320^^^^^^11122333" //2
+	s ^|"ash"|DPT(1,0)="BAKER,MICHAEL^M^2570320^^^^^^11122333" //3
+	s ^|"ash"|DPT("B","BAKER,MICHAEL",1)=""
+	
+	s ^|"bec"|DPT(1,0)="BAKER,MICHAEL^M^2570320^^^^^^11122333" //4
+	s ^|"bec"|DPT(1,0)="BAKER,MICHAEL^M^2570320^^^^^^11122333" //5
+	s ^|"bec"|DPT(1,0)="BAKER,MICHAEL^M^2570320^^^^^^11122333" //6
+	s ^|"bec"|DPT("B","BAKER,MICHAEL",1)=""
+	
+	s ^|"dur"|DPT(1,0)="BAKER,SHARON^M^2580809^^^^^^11122334" //7
+	
+	s ^|"dur"|DPT(2,0)="BAKER,MICHAEL^M^2570320^^^^^^11122333" //8
+	
+	s ^|"ash"|PSRX(1,0)="1^1" //9
+	
+	s ^|"ash"|PSRX(2,0)="1^1" //10
+	
+	s ^|"ash"|PSRX(3,0)="1^1" //11
+	
+	s ^|"bec"|PSRX(1,0)="1^1" //12
+	
+	s ^|"bec"|PSRX(2,0)="2^1" //13
+	
+	s ^|"dur"|PSRX(2,0)="2^1" //14
+	
+	s ^|"dur"|PSRX(1,0)="2^1" //15
+	
+	s ^|"dur"|PSRX(3,0)="3^2" //16
+
+}
+
+ClassMethod ExportTests() {
+	Do $system.OBJ.Export("Test.JournalReaderTest.cls","/scripts/tests/Tests.xml")
+}
+
+ClassMethod Tests() {
+
+	Set ^UnitTestRoot="/scripts/"
+	Do ..ExportTests()
+	Do ##class(%UnitTest.Manager).RunTest("tests")
+}
 
 }

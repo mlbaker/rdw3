@@ -29,7 +29,7 @@ ClassMethod New(oJFH As RDW.JournalReaderHistory) As RDW.JournalReader
 	Set JR.StartTime=oJFH.StartTime
 	Set JR.SignaledToStop=$Case(##class(RDW.JournalReaderStatus).GetStatus(),"R":0,:1)
 	Set JR.JournalReaderHistory=oJFH
-	Set JR.FileClosed=oJFH.JournalFile.FileClosed
+	Set JR.FileClosed=##class(RDW.JournalFileStatus).%OpenId(JR.JournalFile.%Id()).FileClosed
 	Quit JR
 }
 
@@ -108,7 +108,7 @@ Method ReadFile()
 			Set ..SignaledToStop=$Case(##class(RDW.JournalReaderStatus).GetStatus(),"R":0,:1)
 		} // While not EOF and not AskedToStop
 		If '+jRec {
-			//If EOF then we are done with this Journal File for now.  
+			//If EOF then we are done with this Journal File for now. 
 			If (..JournalOffset=jFile.LastRecord.Address)&(..FileClosed) {
 				Set ..EntireFileRead=1
 			}		
@@ -125,13 +125,11 @@ Method ReadFile()
 	} Else {
 		Do ##class(%SYS.System).WriteToConsoleLog("Could not Open JournalReaderHistory object with id="_..JournalReaderHistory.%Id()_" with exclusive lock",1,2)
 	}
-	Set oJF=##class(RDW.JournalFile).%OpenId(..JournalFile.%Id(),4,.sc)
-	If (sc=1) {
-		Set oJF.CurrentlyReadingFile=""
-		Set oJF.EntireFileRead=..EntireFileRead
-		Do oJF.%Save()
-	} Else {
-		Do ##class(%SYS.System).WriteToConsoleLog("Could not Open JournalFile object with id="_..JournalFile.%Id()_" with exclusive lock",1,2)
+	Set Status=##class(RDW.JournalFileStatus).ClearCurrentlyReadingFile(..JournalFile.%Id())
+	If 'Status Do ##class(%SYS.System).WriteToConsoleLog("Could not clear JournalFileStatus.CurrentlyReadingFile for journalFile with id="_..JournalFile.%Id(),1,2)
+	If ..EntireFileRead {
+		Set Status=##class(RDW.JournalFileStatus).SetEntireFileRead(..JournalFile.%Id())
+		If 'Status Do ##class(%SYS.System).WriteToConsoleLog("Could not set JournalFileStatus.EntireFileRead for journalFile with id="_..JournalFile.%Id(),1,2)
 	}
 	Quit
 }
@@ -148,7 +146,7 @@ ClassMethod GetPrimaryKeys(GTW As RDW.GlobalsToWatch, jRec As %SYS.Journal.SetKi
 		} Else {
 			//If Subscript is not a positive number then it is not an IEN
 			Set PKIEN="0,"
-			Quit PKIEN
+			Quit
 		}
 	}
 	Quit PKIEN
